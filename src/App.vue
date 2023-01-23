@@ -6,7 +6,6 @@
     <div class="row">
       <div class="col-md-lg">
         <div id="top"></div>
-        <br>
         <h1 id="title" class="text-center">{{title}}</h1>
       </div>
       <!-- Dies ist nur zum Testen
@@ -21,18 +20,22 @@
       <div id="sides">
         <div class="left-side lap">
           <div class="left-side-inside lap">
-            <label for="r">Select Region</label>
-            <select class="form-select form-control" id="r" v-model="region" @change="reveal()">
-              <option v-for="r in regions">
-                {{ r.region }}
-              </option>
-            </select>
-            <label for="e">Select Event</label>
-            <select class="form-select form-control" id="e" v-model="event" disabled @change="search()">
-              <option v-for="e in events">
-                {{ e.event }}
-              </option>
-            </select>
+            <div class="form-row row justify-content-center">
+              <label for="r">Select Region</label>
+              <select class="form-select form-control" id="r" v-model="region" @change="reveal()">
+                <option v-for="r in regions">
+                  {{ r.region }}
+                </option>
+              </select>
+            </div>
+            <div class="form-row row justify-content-center">
+              <label for="e">Select Event</label>
+              <select class="form-select form-control" id="e" v-model="event" disabled @change="search()">
+                <option v-for="e in events">
+                  {{ e.event }}
+                </option>
+              </select>
+            </div>
             <br>
             <div class="form-row row justify-content-center">
               <div class="col-auto">
@@ -71,6 +74,11 @@
           </div>
         </div>
       </div>
+      <div v-if="lap">
+        <div v-for="i in [0,1,2,4]">
+          <br>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -107,7 +115,7 @@ export default {
       op_medals: 1.0,
       op_clear: 1.0,
       all_trans_secs: 0.5,
-
+      lap: true
     }
   },
   setup() {
@@ -144,6 +152,7 @@ export default {
       this.visible(this.id_clear);
     },
     lapping(option) {
+      this.lap = option;
       var sides = document.getElementById('sides').children;
       var leftsideinside = sides[0].children[0];
       var statistics = document.getElementById('statistics')
@@ -156,7 +165,7 @@ export default {
         statistics.classList.add('lap');
 
       } else {
-        statistics.scrollIntoView();
+        scrollTo(0,300);
         for (let i = 0; i < sides.length; i++) {
           sides[i].classList.remove('lap');
         }
@@ -227,9 +236,17 @@ export default {
   --visible-transition-counter: 0.3s;
 }
 
-.container {
-  max-width: 1000px;
+body {
+  background-color: cornflowerblue;
+}
 
+.container {
+  max-width: 1200px;
+  padding-top: 15px;
+  padding-left: 50px;
+  padding-right: 50px;
+
+  background-color: white;
 }
 
 .placeholder {
@@ -300,9 +317,4 @@ export default {
   opacity: 0;
   transition: all calc(var(--all-transition-counter) - var(--right-transition-counter)) ease-in-out;
 }
-
-
-
-
-
 </style>
