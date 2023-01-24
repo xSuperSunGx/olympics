@@ -12,6 +12,9 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
+First you need the Flask Programm [olympics_server](https://github.com/xSuperSunGx/olympics_server). Now you can follow the following steps:
+
+
 ```sh
 npm install
 ```
