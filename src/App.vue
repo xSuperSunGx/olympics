@@ -2,65 +2,61 @@
 
 
 <template xmlns="http://www.w3.org/1999/html">
-  <header>
-    <h1 id="title" class="text-center">Olympic Search</h1>
-  </header>
+
   <body>
-  <Background row="40" column="20"/>
+  <Background :row="40" :column="40"/>
   <div class="mainbackground">
     <div class="container">
-      <div id="top"/>
       <div class="row justify-content-center">
-        <div id="sides">
-          <div class="left-side lap">
-            <div class="left-side-inside lap">
-              <label for="r">Select Region</label>
-              <select class="form-select form-control" id="r" v-model="region" @change="reveal()">
-                <option v-for="r in regions">
-                  {{ r.region }}
-                </option>
-              </select>
-              <label for="e">Select Event</label>
-              <select class="form-select form-control" id="e" v-model="event" disabled @change="search()">
-                <option v-for="e in events">
-                  {{ e.event }}
-                </option>
-              </select>
-              <br>
-              <div class="form-row row justify-content-center">
-                <div class="col-auto">
-                  <button :id="id_clear" class="btn btn-outline-danger changeVisibility" @click="clear()">Clear</button>
+        <div class="content">
+          <h1 id="title" class="text-center">Olympic Search</h1>
+          <div id="sides">
+            <div :class="'left-side ' + lap">
+              <div class="left-side-inside lap">
+                <label for="r">Select Region</label>
+                <select class="form-select form-control" id="r" v-model="region" @change="reveal()">
+                  <option v-for="r in regions">
+                    {{ r.region }}
+                  </option>
+                </select>
+                <label for="e">Select Event</label>
+                <select class="form-select form-control" id="e" v-model="event" disabled @change="search()">
+                  <option v-for="e in events">
+                    {{ e.event }}
+                  </option>
+                </select>
+                <br>
+                <div class="form-row row justify-content-center">
+                  <div class="col-auto">
+                    <button :class="'btn btn-outline-danger clear ' + visible" @click="clear()">Clear</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="right-side lap">
-            <div :id="id_medals">
-              <VuePlotly  :data="p2" :layout="layout"/>
-            </div>
-          </div>
-        </div>
-        <br>
-        <div id="statistics" class="lap">
-          <div class="row">
-            <div class="col-md-lg">
-              <h1 class="text-center">{{title_graph}}</h1>
+            <div :class="'right-side ' + lap" v-if="hidden">
+               <VuePlotly  :data="p2" :layout="layout"/>
             </div>
           </div>
           <br>
-          <div class="row">
-            <div class="col-xxl-12">
-              <DataTable class="table" :data="input" width="100%">
-                <thead>
-                <tr>
-                  <th v-for="c in columns">
-                    {{ c }}
-                  </th>
-                </tr>
-                </thead>
-                <tfoot>
-                </tfoot>
-              </DataTable>
+        </div>
+
+        <div class="content" v-if="hidden">
+          <h1 :class="'statistics text-center ' + lap" id="stats" v-if="hidden">{{title_graph}}</h1>
+          <div :class="'statistics ' + lap">
+            <div class="row">
+              <div class="col-xxl-12">
+                <DataTable class="table" :data="input" width="100%">
+                  <thead>
+                  <tr>
+                    <th v-for="c in columns">
+                      {{ c }}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tfoot>
+                  </tfoot>
+                </DataTable>
+              </div>
             </div>
           </div>
         </div>
@@ -103,12 +99,9 @@ export default {
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent'
       },
-      id_medals: "medals",
-      id_clear: "clear",
-      op_medals: 1.0,
-      op_clear: 1.0,
-      all_trans_secs: 0.5,
-
+      hidden: true,
+      visible: '',
+      lap: 'lap',
     }
   },
   setup() {
@@ -127,40 +120,38 @@ export default {
       this.event = '';
       this.input = [];
       document.getElementById('e').disabled = true;
-      this.invisible(this.id_clear);
+      this.visible = '';
       this.lapping(true);
-      //document.getElementById('medals').hidden = true;
-      //document.getElementById('clear').hidden = true;
 
     },
-    invisible(id) {
-      document.getElementById(id).classList.remove('visible');
-    },
-    visible(id) {
-      document.getElementById(id).classList.add('visible');
+    setvisible(value) {
+      if(option) {
+        setTimeout(function (scope) {
+          scope.hidden = false;
+        }, 500, this);
+        this.lap = 'lap';
+      } else {
+        setTimeout(function (scope) {
+          scope.lap = '';
+        }, 100, this);
+        this.hidden = true;
+
+      }
     },
     resetClear() {
-      //document.getElementById('clear').hidden = false;
-      //document.getElementById('medals').hidden = false;
-      this.visible(this.id_clear);
+      this.visible = 'visible';
     },
     lapping(option) {
-      var sides = document.getElementById('sides').children;
-      var leftsideinside = sides[0].children[0];
-      var statistics = document.getElementById('statistics')
-      if (option) {
-        for (let i = 0; i < sides.length; i++) {
-          sides[i].classList.add('lap');
-        }
-        leftsideinside.classList.add('lap');
-        statistics.classList.add('lap');
-
+      if(option) {
+        setTimeout(function (scope) {
+          scope.hidden = false;
+        }, 500, this);
+        this.lap = 'lap';
       } else {
-        for (let i = 0; i < sides.length; i++) {
-          sides[i].classList.remove('lap');
-        }
-        leftsideinside.classList.remove('lap');
-        statistics.classList.remove('lap');
+        setTimeout(function (scope) {
+          scope.lap = '';
+        }, 100, this);
+        this.hidden = true;
 
       }
     },
@@ -192,7 +183,7 @@ export default {
       }
       url = 'http://localhost:5000/medals2/' + noc;
       response = await axios.get(url);
-      if(document.getElementsByClassName('right-side')[0].classList.contains('lap')) {
+      if(this.lap === 'lap') {
         this.lapping(false);
       }
       let b = [];
@@ -213,10 +204,6 @@ export default {
       this.p2 = JSON.parse(JSON.stringify(response.data));
       this.columns = c;
       this.input = e;
-      console.log(response.data);
-      console.log(response.data[0].x);
-      console.log(this.p2);
-      console.log(this.p2)
     }
   },
   async mounted() {
@@ -224,7 +211,7 @@ export default {
     const response_e = await axios.get('http://localhost:5000/events');
     this.regions = response_r.data;
     this.events = response_e.data;
-    console.log(this.events)
+    this.lapping(true)
   }
 
 }
@@ -251,17 +238,29 @@ export default {
 
 }
 
-#title {
+h1 {
   font-weight: bold;
+}
+
+.sticky {
+  position: fixed;
+  width: 100%;
+  top: 0
+}
+
+.sticky + .content {
+  padding-top: 80px;
 }
 
 .container {
   min-width: 1100px;
   background-color: rgba(255, 255, 255,0);
   overflow: scroll;
-  margin-top: 60px;
-  padding: 25px;
+  padding: 5px 25px 25px 5px;
   transition: max-width var(--all-transition-counter) ease-in-out;
+}
+
+.container:not([data-scroll='0']) h1 {
 }
 
 @media screen and (max-width: 1100px) {
@@ -314,12 +313,12 @@ input select {
   opacity: 0.0;
 }
 
-.changeVisibility {
+
+.clear {
   visibility: hidden;
   opacity: 0;
-  transition-property: visibility, opacity;
-  transition-duration: var(--visible-transition-counter);
-  transition-timing-function: ease-in-out;
+  transition: visibility var(--all-transition-counter), opacity var(--all-transition-counter), background-color var(--visible-transition-counter);
+  width: 100px;
 }
 
 .visible {
@@ -339,13 +338,13 @@ input select {
 .left-side-inside {
   width: 70%;
 }
-#statistics {
+.statistics {
   width: 100%;
   visibility: visible;
   opacity: 1;
   transition: opacity var(--all-transition-counter) ease-in-out;
 }
-#statistics.lap {
+.statistics.lap {
   visibility: hidden;
   opacity: 0;
 }
@@ -385,9 +384,7 @@ input select {
   transform: translateX(50%);
 }
 
-#clear {
-  width: 100px;
-}
+
 
 
 </style>

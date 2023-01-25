@@ -31,16 +31,11 @@ export default {
   props: {
     row: {
       type: Number,
-      default: 10
+      default: 40
     },
     column: {
       type: Number,
-      default: 10
-    }
-  }
-  data() {
-    return {
-
+      default: 20
     }
   },setup() {
   }, methods: {
