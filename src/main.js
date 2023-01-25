@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import './assets/background.css'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faUserSecret, faCamera, faBullhorn ,  faBattery2, faBalanceScale, faWandMagicSparkles, faPhone, faSnowflake, faBell, faBolt, faCode, faFlag, faRss, faHeart, faMap, faGraduationCap, faSearch, faTag, faUniversity, faWrench} from "@fortawesome/free-solid-svg-icons";
