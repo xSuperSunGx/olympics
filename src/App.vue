@@ -6,7 +6,7 @@
     <h1 id="title" class="text-center">Olympic Search</h1>
   </header>
   <body>
-  <Background/>
+  <Background row="40" column="20"/>
   <div class="mainbackground">
     <div class="container">
       <div id="top"/>

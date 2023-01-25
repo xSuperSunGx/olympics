@@ -1,7 +1,7 @@
 <template>
   <div class="mainbackground">
-    <div class="roww" v-for="i in 40">
-      <div v-for="c in 20">
+    <div class="roww" v-for="i in row">
+      <div v-for="c in column">
         <i class="fa fa-user-secret" aria-hidden="true"></i>
         <i class="fa fa-snowflake-o" aria-hidden="true"></i>
         <i class="fa fa-bell" aria-hidden="true"></i>
@@ -28,6 +28,16 @@
 <script>
 export default {
   name: "Background",
+  props: {
+    row: {
+      type: Number,
+      default: 10
+    },
+    column: {
+      type: Number,
+      default: 10
+    }
+  }
   data() {
     return {
 
